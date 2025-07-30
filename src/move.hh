@@ -1,8 +1,9 @@
 #pragma once
 #include <cstdint>
+#include <vector>
 
 struct Move {
-    uint8_t from = 0;
-    uint8_t to = 0;
-    uint8_t promo = 0;
+    uint8_t from;
+    uint8_t to;
+    uint8_t promo;
 };

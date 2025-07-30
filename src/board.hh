@@ -21,6 +21,7 @@ private:
     int castling = 0b1111;
     int epSquare = -1;
     int sq = 0;
+    bool attacked = true;
 
     struct UndoInfo {
         int capture;

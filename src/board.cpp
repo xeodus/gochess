@@ -130,6 +130,123 @@ std::vector<Move>& Board::legalMoves() const {
                     }
                 }
             }
+
+            case 3: {
+                for (const auto& delta: C::BISHOP_DELTAS) {
+                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
+                }
+            }
+
+            case 4: {
+                for (const auto& delta: C::ROOK_DELTAS) {
+                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
+                }
+            }
+
+            case 5: {
+                for (const auto& delta: {C::BISHOP_DELTAS, C::ROOK_DELTAS}) {
+                    list.push_back({uint8_t(sq88), uint8_t(delta.begin()), 0});
+                }
+            }
+
+            case 6: {
+                for (const auto& delta: C::KING_DELTAS) {
+                    auto target = sq88 + delta;
+                    if (!(target & 0x88)) continue;
+                    if (!(mailbox[target] & us)) {
+                        list.push_back({uint8_t(sq88), uint8_t(delta), 0});
+                    }
+                }
+
+                if (wtm) {
+                    if ((castling & 0b1000) && mailbox.empty() && !attacked) {
+                        list.push_back({C::E1, C::G1, 0});
+                    }
+                    else if ((castling && 0b0100) && mailbox.empty() && !attacked) {
+                        list.push_back({C::E1, C::C1, 0});
+                    }
+                }
+                else {
+                    if ((castling & 0b0010) && mailbox.empty() && !attacked) {
+                        list.push_back({C::E8, C::G8, 0});
+                    }
+                    else if ((castling && 0b0001) && mailbox.empty() && !attacked) {
+                        list.push_back({C::E8, C::C8, 0});
+                    }
+                }
+            }
         }
     }
 }
+
+void Board::makeMove(Move& m) {
+    Move move {0, 0, 0};
+    int captured = mailbox[move.to];
+    history.push_back({captured, castling, epSquare});
+    auto from = move.from;
+    auto to = move.to;
+    auto pc = mailbox[from];
+
+    mailbox[from] = C::EMPTY;
+    mailbox[to] = move.promo ? ((pc & 8) | move.promo) : pc;
+
+    if ((pc & 7) == C::WP && to == epSquare) {
+        auto capturedPawn = to + (wtm ? C::DIR_S : C::DIR_N);
+        mailbox[capturedPawn] = C::EMPTY;
+    }
+
+    if ((pc & 7) == C::WK && abs(to - from) == 2) {
+        if (to > from) {
+            auto rookFrom = C::H1; 
+            auto rookTo = C::F1;
+            mailbox[rookTo] = mailbox[rookFrom];
+            mailbox[rookFrom] = C::EMPTY;
+        }
+        else {
+            auto rookFrom = C::A1; 
+            auto rookTo = C::D1;
+            mailbox[rookTo] = mailbox[rookFrom];
+            mailbox[rookFrom] = C::EMPTY;
+        } 
+    }
+    else if ((pc & 7) == C::BK && abs(to - from) == 2) {
+        if (to > from) {
+            auto rookFrom = C::H8;
+            auto rookTo = C::F8;
+            mailbox[rookTo] = mailbox[rookFrom];
+            mailbox[rookFrom] = C::EMPTY;
+        }
+        else {
+            auto rookFrom = C::A8;
+            auto rookTo = C::D8;
+            mailbox[rookTo] = mailbox[rookFrom];
+            mailbox[rookFrom] = C::EMPTY;
+        }
+    }
+
+    if ((pc & 7) == C::WP && abs(to - from) == 32) {
+        epSquare = (from + to) / 2;
+    }
+
+    // castling logic to be added later
+
+
+    wtm = !wtm;
+}
+
+void Board::undoMove() {
+    UndoInfo last = history.back();
+    castling = last.castling;
+    epSquare = last.epSquare;
+
+    Move move {0, 0, 0};
+    auto from = move.from;
+    auto to = move.to;
+
+    mailbox[from] = mailbox[to];
+    mailbox[to] = last.capture;
+
+    // uncastle to be added
+    wtm = !wtm;
+}
+

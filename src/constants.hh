@@ -9,6 +9,12 @@ namespace C {
     constexpr uint8_t WP = 1,  WN = 2,  WB = 3,  WR = 4,  WQ = 5,  WK = 6;
     constexpr uint8_t BP = 9,  BN = 10, BB = 11, BR = 12, BQ = 13, BK = 14;
 
+    // castling squares
+    constexpr int E1 = 4, G1 = 6, C1 = 2;
+    constexpr int E8 = 60, G8 = 62, C8 = 58;
+    constexpr int H1 = 7, F1 = 5, A1 = 0, D1 = 3;
+    constexpr int H8 = 63, F8 = 61, A8 = 56, D8 = 59;
+    
     // promotion codes
     constexpr uint8_t KNIGHT_PROMO = 2;
     constexpr uint8_t BISHOP_PROMO = 3;
