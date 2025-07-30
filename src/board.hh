@@ -11,7 +11,7 @@ public:
     int pieceAt(int sq) { return sq; }
     void makeMove(Move& m);
     void undoMove();
-    bool sideToMove(bool side);
+    bool sideToMove();
     std::vector<Move>& legalMoves() const;
     bool whiteToMove() const { return wtm; }
     bool inCheck(bool side) const;

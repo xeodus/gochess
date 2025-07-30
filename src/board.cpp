@@ -250,8 +250,15 @@ void Board::undoMove() {
     wtm = !wtm;
 }
 
-bool Board::sideToMove(bool side) {
+bool Board::inCheck(bool side) const {
     int king = 0;
     int us = side ? 0 : 8;
-    
+    for (int sq = 0; sq < 128; sq++) {
+        if (sq & 0x88) { 
+            sq += 7; 
+            continue;
+        }
+        if (mailbox[sq] == us + 6) king = sq;
+    }
+    return attacked;
 }
