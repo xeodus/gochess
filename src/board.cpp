@@ -250,3 +250,8 @@ void Board::undoMove() {
     wtm = !wtm;
 }
 
+bool Board::sideToMove(bool side) {
+    int king = 0;
+    int us = side ? 0 : 8;
+    
+}

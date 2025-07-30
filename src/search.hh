@@ -6,4 +6,4 @@ struct Search {
     int score;
 };
 
-Search result(Board& b, int depthLimit);
+Search search(Board& b, int depthLimit);
