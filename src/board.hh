@@ -6,7 +6,6 @@
 
 class Board {
 public:
-    Board();
     void setFen(const std::string& fen);
     int pieceAt(int sq) { return sq; }
     void makeMove(Move& m);

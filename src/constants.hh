@@ -37,4 +37,5 @@ namespace C {
     constexpr std::array<int,4> BISHOP_DELTAS{15,17,-15,-17};
     constexpr std::array<int,4> ROOK_DELTAS{1,-1,16,-16};
     constexpr std::array<int,8> KING_DELTAS{1,-1,15,16,17,-15,-16,-17};
+    constexpr std::array<int,8> QUEEN_DELTAS{1,-1,16,-16,15,17,-15,-17};
 }

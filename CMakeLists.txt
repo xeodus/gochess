@@ -5,4 +5,3 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(chess src/main.cpp)
-target_link_libraries()

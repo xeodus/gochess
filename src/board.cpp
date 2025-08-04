@@ -1,4 +1,5 @@
 #include "board.hh"
+#include "constants.hh"
 
 Board::Board() {
     setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -97,7 +98,7 @@ std::vector<Move>& Board::legalMoves() const {
                     }
 
                     auto double_ = single + dir;
-                    if ((sq88 && 0x70) == startRank && (double_ & 0x88) && mailbox.empty()) {
+                    if ((sq88 & 0x70) == startRank && (double_ & 0x88) && mailbox.empty()) {
                         list.push_back({uint8_t(sq88), uint8_t(single), 0});
                     }
                 }
@@ -117,7 +118,7 @@ std::vector<Move>& Board::legalMoves() const {
                         }
                     }
                 }
-
+		break;
             }
 
             case 2: {
@@ -129,24 +130,28 @@ std::vector<Move>& Board::legalMoves() const {
                         }
                     }
                 }
+		break;
             }
 
             case 3: {
                 for (const auto& delta: C::BISHOP_DELTAS) {
                     list.push_back({uint8_t(sq88), uint8_t(delta), 0});
                 }
+		break;
             }
 
             case 4: {
                 for (const auto& delta: C::ROOK_DELTAS) {
                     list.push_back({uint8_t(sq88), uint8_t(delta), 0});
                 }
+		break;
             }
 
             case 5: {
-                for (const auto& delta: {C::BISHOP_DELTAS, C::ROOK_DELTAS}) {
-                    list.push_back({uint8_t(sq88), uint8_t(delta.begin()), 0});
+                for (const auto& delta: C::QUEEN_DELTAS) {
+                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
                 }
+		break;
             }
 
             case 6: {
@@ -162,7 +167,7 @@ std::vector<Move>& Board::legalMoves() const {
                     if ((castling & 0b1000) && mailbox.empty() && !attacked) {
                         list.push_back({C::E1, C::G1, 0});
                     }
-                    else if ((castling && 0b0100) && mailbox.empty() && !attacked) {
+                    else if ((castling & 0b0100) && mailbox.empty() && !attacked) {
                         list.push_back({C::E1, C::C1, 0});
                     }
                 }
@@ -170,13 +175,15 @@ std::vector<Move>& Board::legalMoves() const {
                     if ((castling & 0b0010) && mailbox.empty() && !attacked) {
                         list.push_back({C::E8, C::G8, 0});
                     }
-                    else if ((castling && 0b0001) && mailbox.empty() && !attacked) {
+                    else if ((castling & 0b0001) && mailbox.empty() && !attacked) {
                         list.push_back({C::E8, C::C8, 0});
                     }
                 }
+		break;
             }
         }
     }
+    return list;
 }
 
 void Board::makeMove(Move& m) {

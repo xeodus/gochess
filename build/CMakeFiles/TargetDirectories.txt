@@ -1,0 +1,3 @@
+/Users/fever_dreamer/Desktop/C++/gochess/build/CMakeFiles/chess.dir
+/Users/fever_dreamer/Desktop/C++/gochess/build/CMakeFiles/edit_cache.dir
+/Users/fever_dreamer/Desktop/C++/gochess/build/CMakeFiles/rebuild_cache.dir
