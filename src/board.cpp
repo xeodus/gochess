@@ -1,8 +1,10 @@
 #include "board.hh"
 #include "constants.hh"
+#include <cstdint>
+#include <vector>
 
 Board::Board() {
-    setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+   setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 void Board::setFen(const std::string& fen) {
@@ -66,7 +68,7 @@ void Board::setFen(const std::string& fen) {
     }
 }
 
-std::vector<Move>& Board::legalMoves() const {
+std::vector<Move> Board::legalMoves() const {
     auto us = wtm ? 0 : 8;
     auto them = wtm ? 8 : 0;
     if ((mailbox[sq]) == us + 6) {
@@ -124,34 +126,45 @@ std::vector<Move>& Board::legalMoves() const {
             case 2: {
                 for (int d: C::KNIGHT_DELTAS) {
                     auto target = sq88 + d;
-                    if (!(target & 0x88)) {
-                        if (!(mailbox[target] & us)) {
-                            list.push_back({uint8_t(sq88), uint8_t(target), 0});
-                        }
-                    }
+                    if (!(target & 0x88)) continue;
+		    if (!(mailbox[target] & us)) {
+			list.push_back({uint8_t(sq88), uint8_t(target), 0});
+		    }
+		    break;
                 }
-		break;
             }
 
             case 3: {
-                for (const auto& delta: C::BISHOP_DELTAS) {
-                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
+                for (const auto& d: C::BISHOP_DELTAS) {
+		    for (int t = sq88 + d; !(t & 0x88); t += d) {
+			if (mailbox[t] & us) break;
+			list.push_back({uint8_t(sq88), uint8_t(t), 0});
+			if (mailbox[t]) break;
+		    }
                 }
 		break;
             }
 
             case 4: {
-                for (const auto& delta: C::ROOK_DELTAS) {
-                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
-                }
+                for (const auto& d: C::ROOK_DELTAS) {
+                    for (int t = sq88 + d; !(t & 0x88); t += d) {
+			if (mailbox[t] & us) break;
+			list.push_back({uint8_t(sq88), uint8_t(t), 0});
+			if (mailbox[t]) break;
+		    }
+		}
 		break;
             }
 
             case 5: {
-                for (const auto& delta: C::QUEEN_DELTAS) {
-                    list.push_back({uint8_t(sq88), uint8_t(delta), 0});
-                }
-		break;
+                for (const auto& d: C::QUEEN_DELTAS) {
+		    for (int t = sq88 + d; !(t & 0x88); t += d) {
+			if (mailbox[t] & us) break;
+			list.push_back({uint8_t(sq88), uint8_t(t), 0});
+			if (mailbox[t]) break;
+		    }
+		    break;
+		}
             }
 
             case 6: {
@@ -179,11 +192,18 @@ std::vector<Move>& Board::legalMoves() const {
                         list.push_back({C::E8, C::C8, 0});
                     }
                 }
-		break;
             }
         }
     }
-    return list;
+
+    std::vector<Move> legal;
+
+    for (auto& m: list) {
+	Board copy = *this;
+	copy.makeMove(m);
+	if (!copy.inCheck(whiteToMove())) legal.push_back(m);
+    }
+    return legal;
 }
 
 void Board::makeMove(Move& m) {

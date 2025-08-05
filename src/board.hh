@@ -6,12 +6,13 @@
 
 class Board {
 public:
+    Board(); 
     void setFen(const std::string& fen);
     int pieceAt(int sq) { return sq; }
     void makeMove(Move& m);
     void undoMove();
     bool sideToMove();
-    std::vector<Move>& legalMoves() const;
+    std::vector<Move> legalMoves() const;
     bool whiteToMove() const { return wtm; }
     bool inCheck(bool side) const;
 

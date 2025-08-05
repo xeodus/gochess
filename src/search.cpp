@@ -15,7 +15,7 @@ static int evalute(Board& b) {
 static int alphabeta(Board& b, int depth, int alpha, int beta) {
     if (depth == 0) return evalute(b);
     auto moves = b.legalMoves();
-    if (moves.empty()) return b.inCheck(b.sideToMove()) ? -3000 : 0;
+    return moves.empty() ? -3000 : 0;
     for (auto& m: moves) {
         b.makeMove(m);
         auto score = -alphabeta(b, depth-1, -alpha, -beta);

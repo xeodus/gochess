@@ -2,7 +2,7 @@
 #include "board.hh"
 #include "search.hh"
 
-int main() {
+int main() { 
     Board board;
     Search search;
     UCI uci(board, search); 
