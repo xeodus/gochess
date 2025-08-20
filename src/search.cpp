@@ -1,4 +1,5 @@
 #include "search.hh"
+#include <climits>
 
 static int evalute(Board& b) {
     static const int value[7] = {0, 100, 320, 330, 500, 900, 20000};
