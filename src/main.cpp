@@ -1,11 +1,6 @@
-#include "uci.hh"
-#include "board.hh"
-#include "search.hh"
+#include <iostream>
 
-int main() { 
-    Board board;
-    Search search;
-    UCI uci(board, search); 
-    uci.run();
+int main() {
+    std::cout << "Hello world!\n";
     return 0;
 }
