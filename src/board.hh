@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <cstdint>
 #include <optional>
 #include <array>
@@ -58,6 +58,7 @@ struct Position {
     uint64_t whites = 0, blacks = 0, all = 0;
     bool whiteToMove = true;
     std::optional<int> enPassant = std::nullopt;
+    int halfmove = 0, fullmove = 1;
 };
 
 class Board {
@@ -83,4 +84,4 @@ public:
     int findPieceAt(int s) const;
     void undoTo(const Position& p);
     uint64_t perft(Board& b, int depth) const;
-};
+};*/
