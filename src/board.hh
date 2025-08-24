@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include <cstdint>
 #include <optional>
 #include <array>
@@ -20,7 +20,7 @@ inline constexpr uint64_t RANK_7 = 0x00FF000000000000ULL;
 inline constexpr uint64_t RANK_8 = 0xFF00000000000000ULL;
 
 inline void setBit(uint64_t& b, int sq) { b |= (1ULL << sq); }
-inline bool getBit(uint64_t& b, int sq) { return b & (1ULL << sq); }
+inline bool getBit(uint64_t b, int sq) { return b & (1ULL << sq); }
 inline void clearBit(uint64_t& b, int sq) { b &= ~(1ULL << sq); }
 inline int bitScanForward(uint64_t b) { return __builtin_ctzll(b); }
 inline int popcount(uint64_t b) { return __builtin_popcountll(b); }
@@ -84,4 +84,4 @@ public:
     int findPieceAt(int s) const;
     void undoTo(const Position& p);
     uint64_t perft(Board& b, int depth) const;
-};*/
+};
