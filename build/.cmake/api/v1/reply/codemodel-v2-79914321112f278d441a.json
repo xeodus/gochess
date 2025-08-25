@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/fever_dreamer/Desktop/c++/gochess/build",
-		"source" : "/Users/fever_dreamer/Desktop/c++/gochess"
+		"build" : "/Users/fever_dreamer/Desktop/c++/chess/build",
+		"source" : "/Users/fever_dreamer/Desktop/c++/chess"
 	},
 	"version" : 
 	{

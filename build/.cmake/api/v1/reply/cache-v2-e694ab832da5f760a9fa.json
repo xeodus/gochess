@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/fever_dreamer/Desktop/c++/gochess/build"
+			"value" : "/Users/fever_dreamer/Desktop/c++/chess/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -495,7 +495,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/fever_dreamer/Desktop/c++/gochess/build/CMakeFiles/pkgRedirects"
+			"value" : "/Users/fever_dreamer/Desktop/c++/chess/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -555,7 +555,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/fever_dreamer/Desktop/c++/gochess"
+			"value" : "/Users/fever_dreamer/Desktop/c++/chess"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -1219,7 +1219,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/fever_dreamer/Desktop/c++/gochess/build"
+			"value" : "/Users/fever_dreamer/Desktop/c++/chess/build"
 		},
 		{
 			"name" : "ChessBit_IS_TOP_LEVEL",
@@ -1243,7 +1243,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/fever_dreamer/Desktop/c++/gochess"
+			"value" : "/Users/fever_dreamer/Desktop/c++/chess"
 		},
 		{
 			"name" : "SDL2_DIR",

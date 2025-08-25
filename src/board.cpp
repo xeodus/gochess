@@ -317,7 +317,7 @@ std::vector<Move> Board::generatePseudo() const {
         addFrom(pos.pieceBB[Piece::WK], [&] (int s) { return kingAttack[s]; }, true);
 
         if (pos.pieceBB[Piece::WK]) {
-            if (!getBit(pos.all, 5) && (pos.all, 6)) {
+            if (!getBit(pos.all, 5) && !getBit(pos.all, 6)) {
                 if (!isSquareAttacked(4, false) && !isSquareAttacked(5, false) && !isSquareAttacked(6, false)) {
                     if (getBit(pos.pieceBB[Piece::WR], 7)) {
                         Move m { 4, 6 };
@@ -327,7 +327,47 @@ std::vector<Move> Board::generatePseudo() const {
                 }
             }
         }
+	if (pos.pieceBB[Piece::WQ]) {
+	    if (!getBit(pos.all, 1) && !getBit(pos.all, 2) && !getBit(pos.all, 3)) {
+		if (!isSquareAttacked(4, false) && !isSquareAttacked(3, false) && !isSquareAttacked(2, false)) {
+		    if (getBit(pos.pieceBB[Piece::WR], 0)) {
+			Move m { 4, 2 };
+			m.isCastled = true;
+			moves.push_back(m);
+		    }
+		}
+	    }
+	}
     }
+    else {
+	addFrom(pos.pieceBB[Piece::BN], [&] (int s) { return knightAttack[s]; }, true);
+	addFrom(pos.pieceBB[Piece::BB], [&] (int s) { return bishopAttack(s, pos.all); }, true);
+	addFrom(pos.pieceBB[Piece::BR], [&] (int s) { return rookAttack(s, pos.all); }, true);
+	addFrom(pos.pieceBB[Piece::BQ], [&] (int s) { return queenAttack(s, pos.all); }, true);
+	addFrom(pos.pieceBB[Piece::BK], [&] (int s) { return kingAttack[s]; }, true);
 
+	if (pos.pieceBB[Piece::BK]) {
+	    if (!getBit(pos.all, 61) && !getBit(pos.all, 62)) {
+		if (!isSquareAttacked(60, true)  && !isSquareAttacked(61, true) && !isSquareAttacked(62, true)) {
+		    if (getBit(pos.pieceBB[Piece::BR], 63)) {
+			Move m { 60, 62 };
+			m.isCastled = true;
+			moves.push_back(m);
+		    }
+		}
+	    }
+	}
+	if (pos.pieceBB[Piece::BQ]) {
+	    if (!getBit(pos.all, 57) && !getBit(pos.all, 58) && !getBit(pos.all, 59)) {
+		if (!isSquareAttacked(60, true) && !isSquareAttacked(59, true) && !isSquareAttacked(58, true)) {
+		    if (getBit(pos.pieceBB[Piece::BR], 56)) {
+			Move m { 60, 58 };
+			m.isCastled = true;
+			moves.push_back(m);
+		    }
+		}
+	    }
+	}
+    }
     return moves;
 }
