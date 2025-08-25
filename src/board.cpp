@@ -1,6 +1,6 @@
 #include "board.hh"
-#include <algorithm>
 #include <cstdint>
+#include <functional>
 
 void Board::setStartpos() {
     pos = Position {};
@@ -293,5 +293,41 @@ std::vector<Move> Board::generatePseudo() const {
             }
         }
     }
+
+    // Helper
+    auto addFrom = [&] (uint64_t bb, std::function<uint64_t(int)> f, bool whitePiece) {
+        while (bb) {
+            int from = popLsb(bb);
+            uint64_t att = f(from);
+            uint64_t friendly = whitePiece ? pos.whites : pos.blacks;
+            uint64_t targets = att & ~friendly;
+            uint64_t t = targets;
+            while (t) {
+                int to = popLsb(t);
+                moves.emplace_back(from, to);
+            }
+        }
+    };
+
+    if (pos.whiteToMove) {
+        addFrom(pos.pieceBB[Piece::WN], [&] (int s) { return knightAttack[s]; }, true);
+        addFrom(pos.pieceBB[Piece::WB], [&] (int s) { return bishopAttack(s, pos.all); }, true);
+        addFrom(pos.pieceBB[Piece::WR], [&] (int s) { return rookAttack(s, pos.all); }, true);
+        addFrom(pos.pieceBB[Piece::WQ], [&] (int s) { return queenAttack(s, pos.all); }, true);
+        addFrom(pos.pieceBB[Piece::WK], [&] (int s) { return kingAttack[s]; }, true);
+
+        if (pos.pieceBB[Piece::WK]) {
+            if (!getBit(pos.all, 5) && (pos.all, 6)) {
+                if (!isSquareAttacked(4, false) && !isSquareAttacked(5, false) && !isSquareAttacked(6, false)) {
+                    if (getBit(pos.pieceBB[Piece::WR], 7)) {
+                        Move m { 4, 6 };
+                        m.isCastled = true;
+                        moves.push_back(m);
+                    }
+                }
+            }
+        }
+    }
+
     return moves;
 }
