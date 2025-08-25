@@ -1,10 +1,7 @@
 #include "board.hh"
 #include <cstdint>
-<<<<<<< HEAD
-#include <functional>
-=======
 #include <utility>
->>>>>>> d893128 (trivial changes in legal move generation and SDL2 integration)
+#include <functional>
 
 void Board::setStartpos() {
     pos = Position {};

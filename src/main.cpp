@@ -1,10 +1,4 @@
 #include <print>
-<<<<<<< HEAD
-
-int main() {
-    std::println("Hello world!");
-}
-=======
 #include <SDL2/SDL.h>
 #include <string>
 
@@ -43,4 +37,3 @@ void drawTextSimple(SDL_Renderer *ren, int x, int y, const std::string &text, SD
 int main() {
     std::println("Hello world!");
 }
->>>>>>> d893128 (trivial changes in legal move generation and SDL2 integration)
