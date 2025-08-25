@@ -1,6 +1,10 @@
 #include "board.hh"
 #include <cstdint>
+<<<<<<< HEAD
 #include <functional>
+=======
+#include <utility>
+>>>>>>> d893128 (trivial changes in legal move generation and SDL2 integration)
 
 void Board::setStartpos() {
     pos = Position {};
@@ -370,4 +374,140 @@ std::vector<Move> Board::generatePseudo() const {
 	}
     }
     return moves;
+}
+
+
+std::vector<Move> Board::generateLegal() {
+    auto pseudo = generatePseudo();
+    std::vector<Move> legal;
+
+    for (const auto& m: pseudo) {
+        Position snap = pos;
+        makeMove(m);
+        int kingSq = -1;
+        if (!pos.whiteToMove) {
+            if (pos.pieceBB[Piece::WK]) kingSq = bitScanForward(pos.pieceBB[Piece::WK]);
+        }
+        else {
+            if (pos.pieceBB[Piece::BK]) kingSq = bitScanForward(pos.pieceBB[Piece::BK]);
+        }
+
+        bool inCheck = isSquareAttacked(kingSq, !pos.whiteToMove);
+        computeAggregate();
+        if (!inCheck) legal.push_back(m);
+    }
+    return legal;
+}
+
+int Board::findPieceAt(int s) const {
+    for (int i = 0; i < 12; i++) {
+        if (getBit(pos.pieceBB[i], s)) return i;
+    }
+    return -1;
+}
+
+void Board::makeMove(const Move& m) {
+    int moved = -1;
+    for (int i = 0; i < 12; i++) {
+        if (getBit(pos.pieceBB[i], m.from)) { moved = i; break; }
+
+    }
+
+    if (moved == -1) return;
+    bool movingWhite = moved < 6;
+    int capture = -1;
+
+    if (m.isEp) {
+        if (movingWhite) {
+            int cap = m.to - 8;
+            for (int i = 6; i < 12; i++) {
+                if (getBit(pos.pieceBB[i], cap)) {
+                    capture = i;
+                    clearBit(pos.pieceBB[i], cap);
+                    break;
+                }
+            }
+        }
+        else {
+            int cap = m.to + 8;
+            for (int i = 0; i < 6; i++) {
+                if (getBit(pos.pieceBB[i], cap)) {
+                    capture = i;
+                    clearBit(pos.pieceBB[i], cap);
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        for (int i = 0; i < 12; i++) {
+            if (getBit(pos.pieceBB[i],m.to)) {
+                capture = i;
+                clearBit(pos.pieceBB[i], m.to);
+                break;
+            }
+        }
+    }
+
+    clearBit(pos.pieceBB[moved], m.from);
+
+    if (m.promotions != 1) {
+        setBit(pos.pieceBB[m.promotions], m.to);
+    }
+    else {
+        setBit(pos.pieceBB[moved], m.to);
+    }
+
+    if (m.isCastled) {
+        if (movingWhite) {
+            if (m.to == 6) {
+                clearBit(pos.pieceBB[Piece::WR], 7);
+                setBit(pos.pieceBB[Piece::WR], 5);
+            }
+            else if (m.to == 2) {
+                clearBit(pos.pieceBB[Piece::WR], 0);
+                setBit(pos.pieceBB[Piece::WR], 3);
+            }
+        }
+        else {
+            if (m.to == 62) {
+                clearBit(pos.pieceBB[Piece::BR], 63);
+                setBit(pos.pieceBB[Piece::BR], 61);
+            }
+            else if (m.to == 58) {
+                clearBit(pos.pieceBB[Piece::BR], 56);
+                setBit(pos.pieceBB[Piece::BR], 59);
+            }
+        }
+    }
+
+    if (movingWhite) {
+        pos.pieceBB[Piece::WK] = pos.pieceBB[Piece::WQ] = false;
+    }
+    else {
+        pos.pieceBB[Piece::BK] = pos.pieceBB[Piece::BQ] = false;
+    }
+
+    if (m.from == 0 || m.to == 0) pos.pieceBB[Piece::WQ] = false;
+    if (m.from == 7 || m.to == 7) pos.pieceBB[Piece::WK] = false;
+    if (m.from == 56 || m.to == 56) pos.pieceBB[Piece::BQ] = false;
+    if (m.from == 63 || m.to == 63) pos.pieceBB[Piece::BK] = false;
+
+    if (m.isDouble) {
+        if (movingWhite) pos.enPassant = m.from + 8;
+        else pos.enPassant = m.from - 8;
+    }
+    else {
+        pos.enPassant = -1;
+    }
+
+    if (moved%6 == 0 && capture != -1) pos.halfmove = 0;
+    else pos.halfmove++;
+    if (!pos.whiteToMove) pos.fullmove++;
+    computeAggregate();
+}
+
+void Board::restore(const Position& p) {
+    pos = p;
+    computeAggregate();
 }

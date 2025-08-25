@@ -80,7 +80,7 @@ public:
     std::vector<int> generatePseudoLegal() const;
     bool isSquareAttacked(int sq, bool byWhite) const;
     std::vector<Move> generatePseudo() const;
-    std::vector<Move> generateLegal() const;
+    std::vector<Move> generateLegal();
     int findPieceAt(int s) const;
     void undoTo(const Position& p);
     uint64_t perft(Board& b, int depth) const;
